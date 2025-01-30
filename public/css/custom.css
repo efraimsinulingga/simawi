@@ -1,0 +1,46 @@
+body {
+  font-family: "Noto Sans", serif;
+}
+
+.head-font {
+  font-family: "Kumbh Sans", serif;
+  font-weight: 700;
+}
+
+.bg-ngurah-primary {
+  background: #34939B;
+}
+
+.bg-ngurah-secondary {
+  background: #CEDD31;
+}
+
+.small-label {
+  top:-12px;
+  left:8px;
+}
+
+.small {
+  font-size: .75em;
+}
+
+.toggle-pass{
+  right: 16px;
+  top:16px;
+  cursor: pointer;
+}
+
+.case{
+  width:240px;
+  margin-right:32px;
+}
+
+.case:last-child{
+  width:240px;
+  margin-right:0px;
+}
+
+.case-scroll{
+  overflow: auto;
+  width: max-content;
+}
