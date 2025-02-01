@@ -9,6 +9,15 @@ class User extends CI_Controller {
         $this->load->helper('form');        
         $this->load->helper('url');
         $this->load->library('form_validation');
+
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        if ($this->session->userdata('role') !== 'Admin') {            
+            $this->session->set_flashdata('errors', "Maaf! Anda tidak dapat mengakses halaman ini");
+            redirect('/');
+        }
     }
 
     public function list() {        
@@ -52,6 +61,7 @@ class User extends CI_Controller {
                         
             $this->User_model->save_user($name, $email, $hashed_password);
 
+            $this->session->set_flashdata('success', "Data user berhasil disimpan");
             redirect('user');
         }        
     }
@@ -69,13 +79,16 @@ class User extends CI_Controller {
         $this->form_validation->set_rules('id', 'ID', 'required');
         $this->form_validation->set_rules('name', 'Nama', 'required|min_length[3]');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-        $this->form_validation->set_rules('password', 'Password Default', 'required|min_length[6]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/]');
+
+        if($this->input->post('password') != null) {
+            $this->form_validation->set_rules('password', 'Password Default', 'required|min_length[6]|regex_match[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/]');
+        }
 
         // Run the form validation
         if ($this->form_validation->run() === FALSE)
         {            
             $this->session->set_flashdata('errors', validation_errors());
-            redirect('user/edit'); 
+            redirect('user/edit?id='.$this->input->post('id')); 
         }
         else {
             $this->load->model('User_model');
@@ -83,12 +96,16 @@ class User extends CI_Controller {
             $id = $this->input->post('id');
             $name = $this->input->post('name');
             $email = $this->input->post('email');
-            $password = $this->input->post('password');            
 
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $hashed_password = null;
+            if($this->input->post('password') !== null) {
+                $password = $this->input->post('password');            
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            }             
                         
             $this->User_model->update_user($id, $name, $email, $hashed_password);
-
+            
+            $this->session->set_flashdata('success', "Data user berhasil diupdate");
             redirect('user');
         }        
     }
@@ -100,6 +117,7 @@ class User extends CI_Controller {
         $id = $this->input->get('id');
         $user = $this->User_model->delete_user($id);
         
+        $this->session->set_flashdata('success', "Data user telah dihapus");
         redirect('user'); 
     }
 }

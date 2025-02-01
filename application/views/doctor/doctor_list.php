@@ -15,7 +15,7 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Data Dokter</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url(''); ?>">Dashboard</a></li>
                             <li class="breadcrumb-item active">Dokter</li>
                         </ol>                                           
 						<!--Content Here-->
@@ -29,7 +29,7 @@
                                         Data Dokter
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <a href="/doctor/create" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Dokter</a>
+                                        <a href="<?php echo base_url('/doctor/create'); ?>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Dokter</a>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                                             <td><?php echo $item['Email']; ?></td>
                                             <td><?php echo date('d M Y', strtotime($item['CreatedAt'])); ?></td>                                            
                                             <td>
-                                                <a href="/doctor/edit?id=<?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
+                                                <a href="<?php echo base_url('/doctor/edit?id='); ?><?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
                                                 <button type="button" onClick="deleteConfirm(<?php echo $item['ID']; ?>)" class="btn btn-sm btn-danger ms-2"><i class="fas fa-fw fa-trash"></i>Delete</button>
                                             </td>
                                         </tr>
@@ -90,10 +90,7 @@
                 }
             });
         </script>
-        
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
+                
         <script>
             function deleteConfirm(id) {
                 Swal.fire({
@@ -106,7 +103,7 @@
                     confirmButtonText: "Ya, Hapus!"
                     }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '/doctor/delete?id='+id
+                        window.location.href = "<?php echo base_url('/doctor/delete?id='); ?>"+id
                     }
                 });
             }

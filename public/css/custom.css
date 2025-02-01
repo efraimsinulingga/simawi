@@ -44,3 +44,7 @@ body {
   overflow: auto;
   width: max-content;
 }
+
+.entity:hover {
+  background: #f0f0f0;
+}

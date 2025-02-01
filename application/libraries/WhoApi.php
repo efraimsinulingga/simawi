@@ -4,7 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class WhoApi {
     private $CI;
     private $tokenEndpoint = "https://icdaccessmanagement.who.int/connect/token";
-    private $apiUrl = "https://id.who.int/icd/entity/search?q=diabetes";
+    private $apiUrl2 = "https://id.who.int/icd/entity/search?q=diabetes";
+    private $apiUrl = "https://id.who.int/icdapi/entity/search?q=1697&release=11&useFuzzy=false&limit=10";
     private $clientId;
     private $clientSecret;
     private $scope = "icdapi_access";

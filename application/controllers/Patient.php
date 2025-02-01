@@ -11,6 +11,15 @@ class Patient extends CI_Controller {
         $this->load->library('form_validation');
         $this->load->model('Patient_model');
         $this->load->model('User_model');
+
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        if ($this->session->userdata('role') !== 'Admin') {            
+            $this->session->set_flashdata('errors', "Maaf! Anda tidak dapat mengakses halaman ini");
+            redirect('/');
+        }
     }
 
     public function list() {
@@ -61,6 +70,7 @@ class Patient extends CI_Controller {
                         
             $this->Patient_model->save_user($record, $name, $birth, $nik, $phone, $address, $bloodtype, $weight, $height);
 
+            $this->session->set_flashdata('success', "Data pasien disimpan");
             redirect('patient');
         }        
     }
@@ -89,7 +99,7 @@ class Patient extends CI_Controller {
         if ($this->form_validation->run() === FALSE)
         {            
             $this->session->set_flashdata('errors', validation_errors());
-            redirect('patient'); 
+            redirect('patient/edit?id='.$this->input->post('id')); 
         }
         else {
             $id = $this->input->post('id');
@@ -112,6 +122,7 @@ class Patient extends CI_Controller {
                         
             $this->Patient_model->update_user($id, $record, $name, $birth, $nik, $phone, $address, $bloodtype, $weight, $height);
 
+            $this->session->set_flashdata('success', "Data pasien telah diupdate");
             redirect('patient');
         }        
     }
@@ -122,6 +133,7 @@ class Patient extends CI_Controller {
         $id = $this->input->get('id');
         $user = $this->Patient_model->delete_user($id);
         
+        $this->session->set_flashdata('success', "Data pasien telah dihapus");
         redirect('patient'); 
     }
 }

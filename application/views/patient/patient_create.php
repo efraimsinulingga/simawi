@@ -15,8 +15,8 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Tambah Pasien</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href='/patient'>Pasien</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('/patient'); ?>">Pasien</a></li>
                             <li class="breadcrumb-item active">Tambah Pasien</li>
                         </ol>                                           
 						<!--Content Here-->

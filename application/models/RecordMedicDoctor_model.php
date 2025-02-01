@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class RecordMedicDoctor_model extends CI_Model {
     
-    public function get_patient_history() {
+    public function get_patient_history($isDone, $date, $q) {
         $this->db->select('
             PatientHistory.*, 
             Patient.name AS PatientName, 
@@ -21,8 +21,15 @@ class RecordMedicDoctor_model extends CI_Model {
         $doctor = $this->session->userdata('user_id');
 
         $this->db->where('PatientHistory.ConsultationBy', $doctor);
-        $this->db->where('PatientHistory.isDone', 0);
-
+        $this->db->where('PatientHistory.isDone', $isDone);
+        $this->db->where('DATE(PatientHistory.DateVisit)', $date);
+        if ($q != null) {
+            $this->db->group_start();
+            $this->db->like('Patient.name', $q);
+            $this->db->or_like('Patient.RecordNumber', $q);
+            $this->db->group_end();
+        }
+    
         $query = $this->db->get();
         return $query->result_array();
 
@@ -32,7 +39,9 @@ class RecordMedicDoctor_model extends CI_Model {
         $this->db->select('
             PatientHistory.*, 
             Patient.name AS PatientName, 
-            Patient.birth AS PatientBirth, 
+            Patient.birth AS PatientBirth,
+            Patient.height AS PatientHeight,
+            Patient.weight AS PatientWeight, 
             (
                 SELECT name FROM User WHERE ID = PatientHistory.ConsultationBy LIMIT 1
             ) AS DoctorName,
@@ -54,28 +63,7 @@ class RecordMedicDoctor_model extends CI_Model {
         
         return $query->row();
     }
-    
-
-    public function get_total()
-    {
-        $this->db->select('COUNT(ID) AS total');
-        $this->db->from('Patient');
         
-        $query = $this->db->get();
-        return $query->row()->total; 
-    }
-
-    public function get_total_month()
-    {
-        $this->db->select('COUNT(ID) AS total');
-        $this->db->from('Patient');
-        $this->db->where('MONTH(createdat)', date('m'));
-        $this->db->where('YEAR(createdat)', date('Y'));        
-        
-        $query = $this->db->get();
-        return $query->row()->total; 
-    }
-
     public function get_user()
     {
         $this->db->select('*');
@@ -84,34 +72,14 @@ class RecordMedicDoctor_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
-
-    public function get_user_month()
-    {
-        $this->db->select('*');
-        $this->db->from('Patient');
-        $this->db->where('MONTH(createdat)', date('m'));
-        $this->db->where('YEAR(createdat)', date('Y'));        
-        
-        $query = $this->db->get();
-        return $query->result_array();
-    }
-
-    public function check_user_id($id)
-    {
-        return $this->db->get_where('Patient', ['ID' => $id])->row();
-    }
-
-    public function check_user_record($record)
-    {
-        return $this->db->get_where('Patient', ['RecordNumber' => $record3])->row();
-    }
-
-    public function save_user($id, $diagnose, $kode, $name)
+    
+    public function save($id, $diagnose, $kode, $name, $symptoms)
     {
         $data = [
             'DoctorDiagnose' => $diagnose,
             'ICD10Code' => $kode,            
             'ICD10Name' => $name,            
+            'Symptoms' => $symptoms,
             'isDone' => 1,            
         ];
 

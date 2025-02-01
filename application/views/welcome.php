@@ -5,6 +5,9 @@
 		<title>SIMAWI - Dashboard</title>
 		<meta name="description" content="" />
 		<?php $this->load->view('component/head', FALSE); ?>
+        <style>
+            .datatable-top{display:none;}
+        </style>
     </head>
     <body class="sb-nav-fixed">
 		<?php $this->load->view('component/nav', FALSE); ?>
@@ -35,7 +38,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Data Pasien
+                                Data Pasien Terbaru
                             </div>
                             <div class="card-body">
                             <table id="table">
@@ -46,7 +49,6 @@
                                             <th>Tanggal Lahir (Usia)</th>
                                             <th>No. Hp</th>
                                             <th>Tanggal Daftar</th>                                            
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -56,7 +58,6 @@
                                             <th>Tanggal Lahir (Usia)</th>
                                             <th>No. Hp</th>          
                                             <th>Tanggal Daftar</th>                                                                              
-                                            <th></th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -67,11 +68,7 @@
                                             <td><?php echo $item['Name']; ?></td>
                                             <td><?php echo date('d M Y', strtotime($item['Birth'])); ?> (<?php echo (date('Y') - date('Y', strtotime($item['Birth']))); ?>)</td>
                                             <td><?php echo $item['Phone']; ?></td>
-                                            <td><?php echo date('d M Y', strtotime($item['CreatedAt'])); ?></td>
-                                            <td>
-                                                <a href="/patient/edit?id=<?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
-                                                <button type="button" onClick="deleteConfirm(<?php echo $item['ID']; ?>)" class="btn btn-sm btn-danger ms-2"><i class="fas fa-fw fa-trash"></i>Delete</button>
-                                            </td>
+                                            <td><?php echo date('d M Y', strtotime($item['CreatedAt'])); ?></td>                                            
                                         </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>
@@ -117,7 +114,15 @@
             window.addEventListener('DOMContentLoaded', event => { 
                 const datatablesSimple = document.getElementById('table');
                 if (datatablesSimple) {
-                    new simpleDatatables.DataTable(datatablesSimple);
+                    new simpleDatatables.DataTable(datatablesSimple,
+                    {
+                        searching: false,
+                        ordering:  false,
+                        paging: false,
+                        info: false,
+                        scrollX: true,
+                    }
+                    );
                 }
             });
         </script>

@@ -15,8 +15,8 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Edit User</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href='/user'>User</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('/user'); ?>">User</a></li>
                             <li class="breadcrumb-item active">Edit User</li>
                         </ol>                                           
 						<!--Content Here-->
@@ -48,7 +48,8 @@
 
                                             <div class="form-group mb-2">
                                                 <label class="text-secondary fs-6" for="password">Password Default</label>
-                                                <input required name="password" type="text" class="form-control" id="password" aria-describedby="password" placeholder="Isikan password">
+                                                <input name="password" type="text" class="form-control" id="password" aria-describedby="password" placeholder="Isikan password">
+                                                <p class="text-danger fs-6">Biarkan kosong jika password tidak diupdate</p>
                                             </div>
 
                                             <?php if ($this->session->flashdata('errors')): ?>

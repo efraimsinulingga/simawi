@@ -15,7 +15,7 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Data Riwayat Pasien</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
                             <li class="breadcrumb-item active">Riwayat Pasien</li>
                         </ol>                                           
 						<!--Content Here-->
@@ -24,21 +24,31 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col-md-8 pt-1">
+                                    <div class="col-md-4 pt-1">
                                         <i class="fas fa-table me-1"></i>
                                         Data Riwayat Pasien
-                                    </div>                                    
+                                    </div>              
+                                    <form method="GET" class="col-md-8 d-flex justify-content-end">
+                                        <input value="<?php if(isset($_GET['q'])) echo $_GET['q'] ?>" class="form-control me-4" placeholder="Cari no medis/nama pasien" name="q"/>
+                                        <input value="<?php if(isset($_GET['date'])) echo $_GET['date'] ?>" type="date" class="form-control me-4 w-50" placeholder="Tanggal Visit" name="date"/>
+                                        <select name="is_done" class="form-control w-50">
+                                            <option <?php if(isset($_GET['is_done']) && $_GET['is_done'] == '0') echo 'selected' ?> value="0">Belum Selesai</option>
+                                            <option <?php if(isset($_GET['is_done']) && $_GET['is_done'] == '1') echo 'selected' ?> value="1">Selesai</option>
+                                        </select>
+                                        <button type="submit" method="GET" class="ms-4 btn btn-light"><i class="fa-solid fa-magnifying-glass"></i></button>
+                                    </form>                    
                                 </div>
                             </div>
                             <div class="card-body">
+                            <?php if (!empty($user)): ?>
                                 <table id="table">
                                     <thead>
                                         <tr>
-                                            <th>No. Rekam Medis</th>
+                                            <th>No. Medis</th>
+                                            <th>Nama Pasien</th>
+                                            <th>Tgl. Lahir (Usia)</th>
                                             <th>Tanggal Daftar</th>
-                                            <th>Didaftar oleh</th>
-                                            <th>Nama</th>
-                                            <th>Tanggal Lahir (Usia)</th>
+                                            <th>Didaftar oleh</th>                                            
                                             <th>Dokter</th>
                                             <th>Status</th>
                                             <th></th>
@@ -46,25 +56,25 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>No. Rekam Medis</th>
+                                            <th>No. Medis</th>
+                                            <th>Nama Pasien</th>
+                                            <th>Tgl. Lahir (Usia)</th>
                                             <th>Tanggal Daftar</th>
-                                            <th>Didaftar oleh</th>
-                                            <th>Nama</th>
-                                            <th>Tanggal Lahir (Usia)</th>
+                                            <th>Didaftar oleh</th>                                            
                                             <th>Dokter</th>
                                             <th>Status</th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    <?php if (!empty($user)): ?>
+                                    
                                         <?php foreach ($user as $item): ?>
                                         <tr>
                                             <td><?php echo $item['RecordNumber']; ?></td>
-                                            <td><?php echo date('d M Y', strtotime($item['DateVisit'])); ?></td>
-                                            <td><?php echo $item['RegisteredName']; ?></td>
                                             <td><?php echo $item['PatientName']; ?></td>
                                             <td><?php echo date('d M Y', strtotime($item['PatientBirth'])); ?> (<?php echo (date('Y') - date('Y', strtotime($item['PatientBirth']))); ?>)</td>
+                                            <td><?php echo date('d M Y', strtotime($item['DateVisit'])); ?></td>                                                                                        
+                                            <td><?php echo $item['RegisteredName']; ?></td>                                            
                                             <td><?php echo $item['DoctorName']; ?></td>
                                             <td>
                                             <?php 
@@ -76,17 +86,19 @@
                                                 ?>
                                             </td>                                            
                                             <td>
-                                                <a href="/medical-record/diagnose?id=<?php echo $item['ID']?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Periksa</a>
+                                                <?php if($item['isDone'] == 0):?>
+                                                <a href="<?php echo base_url('/medical-record/diagnose?id='); ?><?php echo $item['ID']?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Periksa</a>
+                                                <?php endif;?>
                                             </td>
                                         </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="2" class="text-center">Tidak ada Data</td>
-                                        </tr>
-                                    <?php endif; ?>
+                                        <?php endforeach; ?>                                    
                                     </tbody>
                                 </table>
+                                <?php else: ?>
+                                    <p class="text-center fs-6 text-secondary">
+                                        Tidak ada Data
+                                    </p>
+                                <?php endif; ?>
                             </div>
                         </div>                        
                     </div>   
@@ -110,23 +122,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-        <script>
-            function deleteConfirm(id) {
-                Swal.fire({
-                    title: "Hapus?",
-                    text: "Data akan dihapus secara permanen!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Ya, Hapus!"
-                    }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = '/record/delete?id='+id
-                    }
-                });
-            }
-
+        <script>            
             function comingSoon() {
                 Swal.fire({
                     title: "Oops",

@@ -43,14 +43,17 @@ class User_model extends CI_Model {
         $this->db->insert('User', $data);
     }
 
-    public function update_user($id, $name, $email, $password)
+    public function update_user($id, $name, $email, $password = null)
     {
         $data = [
             'name' => $name,
             'email' => $email,
-            'password' => $password,
             'updatedat' => date('Y-m-d H:i:s'),
         ];
+
+        if($password != null) {
+            $data['password'] = $password;
+        }
     
         $this->db->where('ID', $id);
         return $this->db->update('User', $data); 

@@ -13,10 +13,37 @@ class MedicalRecord extends CI_Controller {
         $this->load->model('Patient_model');
         $this->load->model('User_model');
         $this->load->model('Doctor_model');
+
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        if ($this->session->userdata('role') !== 'Doctor') {            
+            $this->session->set_flashdata('errors', "Maaf! Anda tidak dapat mengakses halaman ini");
+            redirect('/');
+        }
     }
 
     public function list() {
-        $user = $this->RecordMedicDoctor_model->get_patient_history();
+        if($this->input->get('is_done')) {
+            $isDone = $this->input->get('is_done');
+        } else {
+            $isDone = '0';
+        }
+        if($this->input->get('date')) {
+            $date = $this->input->get('date');
+        } else {
+            $date = date('Y-m-d');
+        }
+        
+        if($this->input->get('q')) {
+            $q = $this->input->get('q');
+        } else {
+            $q=null;
+        }
+
+        $user = $this->RecordMedicDoctor_model->get_patient_history($isDone, $date, $q);
+        
         $data['user'] = $user;
         $this->load->view('record_medic/record_medic_list', $data);
     }
@@ -26,39 +53,26 @@ class MedicalRecord extends CI_Controller {
         $id = $this->input->get('id');
 
         $user = $this->RecordMedicDoctor_model->get_single_patient_history($id);
+        if($user->isDone == '1') {
+            $this->session->set_flashdata('success', "Data Pemeriksaan Pasien Telah Selesai!");
+        }
         $data['user'] = $user;
         
         $this->load->view('record_medic/record_medic_edit', $data);
-    }
-
-    public function create() {          
-        $patient = $this->Patient_model->get_user();
-        $data['patient'] = $patient;
-    
-        $doctor = $this->Doctor_model->get_user();
-        $data['doctor'] = $doctor;
-
-        $this->load->view('record/record_create', $data);
-    }
+    }  
 
     public function diagnose_post() {        
         
             $id = $this->input->post('id');
             $kode = $this->input->post('kode');
             $name = $this->input->post('name');
-            $diagnose = $this->session->userdata('diagnose');
-            $symptoms = $this->input->post('symptoms');                        
+            $diagnose = $this->input->post('diagnose');
+            $symptoms = $this->input->post('symptoms');    
             
-            $this->RecordMedicDoctor_model->save_user($id, $diagnose, $kode, $name);
+            
+            $this->RecordMedicDoctor_model->save($id, $diagnose, $kode, $name, $symptoms);
 
+            $this->session->set_flashdata('success', "Pemeriksaan Selesai!");
             redirect('medical-record');
     }
-
-    public function edit() {                
-        $id = $this->input->get('id');
-
-        $user = $this->Patient_model->check_user_id($id);
-        $data['user'] = $user;
-        $this->load->view('patient/patient_edit', $data);
-    }    
 }

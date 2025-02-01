@@ -13,10 +13,36 @@ class Record extends CI_Controller {
         $this->load->model('Patient_model');
         $this->load->model('User_model');
         $this->load->model('Doctor_model');
+
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth/login');
+        }
+
+        if ($this->session->userdata('role') !== 'Admin') {            
+            $this->session->set_flashdata('errors', "Maaf! Anda tidak dapat mengakses halaman ini");
+            redirect('/');
+        }
     }
 
     public function list() {
-        $user = $this->RecordMedic_model->get_patient_history();
+        if($this->input->get('is_done')) {
+            $isDone = $this->input->get('is_done');
+        } else {
+            $isDone = '0';
+        }
+        if($this->input->get('date')) {
+            $date = $this->input->get('date');
+        } else {
+            $date = date('Y-m-d');
+        }
+        
+        if($this->input->get('q')) {
+            $q = $this->input->get('q');
+        } else {
+            $q=null;
+        }
+
+        $user = $this->RecordMedic_model->get_patient_history($isDone, $date, $q);
         $data['user'] = $user;
         $this->load->view('record/record_list', $data);
     }
@@ -34,7 +60,6 @@ class Record extends CI_Controller {
     public function create_post() {        
         $this->form_validation->set_rules('doctor', 'Dokter', 'required');
         $this->form_validation->set_rules('patient', 'Pasien', 'required');        
-        $this->form_validation->set_rules('symptoms', 'Gejala', 'required');        
         // Run the form validation
         if ($this->form_validation->run() === FALSE)
         {            
@@ -46,9 +71,9 @@ class Record extends CI_Controller {
             $doctor = $this->input->post('doctor');
             $patient = $this->input->post('patient');
             $admin = $this->session->userdata('user_id');
-            $symptoms = $this->input->post('symptoms');                        
-            $this->RecordMedic_model->save_user($symptoms, $doctor, $patient, $admin);
+            $this->RecordMedic_model->save($doctor, $patient, $admin);
 
+            $this->session->set_flashdata('success', "Data pendaftaran berhasil");
             redirect('record');
         }        
     }
@@ -56,60 +81,63 @@ class Record extends CI_Controller {
     public function edit() {                
         $id = $this->input->get('id');
 
-        $user = $this->Patient_model->check_user_id($id);
-        $data['user'] = $user;
-        $this->load->view('patient/patient_edit', $data);
+        $record = $this->RecordMedic_model->get_record_id($id);
+
+        if(!$record) {
+
+        }
+        if($record->isDone == 1) {
+            $this->session->set_flashdata('errors', 'Mohon maaf, data riwayat pasien ini sudah selesai.');
+            redirect('record');
+        }
+
+        $data['record'] = $record;
+
+        $patient = $this->Patient_model->get_user();
+        $data['patient'] = $patient;
+    
+        $doctor = $this->Doctor_model->get_user();
+        $data['doctor'] = $doctor;
+
+        $this->load->view('record/record_edit', $data);
     }
 
     public function edit_post() {        
+        $this->form_validation->set_rules('doctor', 'Dokter', 'required');
+        $this->form_validation->set_rules('patient', 'Pasien', 'required');        
         $this->form_validation->set_rules('id', 'ID', 'required');
-        $this->form_validation->set_rules('rekam', 'Rekam Medis', 'required');
-        $this->form_validation->set_rules('name', 'Nama', 'required|min_length[3]');
-        $this->form_validation->set_rules('birth', 'Tanggal Lahir', 'required');
-        $this->form_validation->set_rules('nik', 'NIK', 'required');
-        $this->form_validation->set_rules('phone', 'Phone', 'required');
-        $this->form_validation->set_rules('address', 'Alamat', 'required');
-        $this->form_validation->set_rules('blood', 'Golongan Darah', 'required');
-        $this->form_validation->set_rules('height', 'Tinggi', 'required');
-        $this->form_validation->set_rules('weight', 'Berat', 'required');
-
         // Run the form validation
+
+        $id = $this->input->post('id');
+
         if ($this->form_validation->run() === FALSE)
         {            
             $this->session->set_flashdata('errors', validation_errors());
-            redirect('patient'); 
+            redirect('record/edit?id='.$id); 
         }
-        else {
-            $id = $this->input->post('id');
-            $record = $this->input->post('rekam');
-            $name = $this->input->post('name');
-            $birth = $this->input->post('birth');
-            $nik = $this->input->post('nik');
-            $phone = $this->input->post('phone');
-            $address = $this->input->post('address');
-            $bloodtype = $this->input->post('blood');
-            $weight = $this->input->post('weight');
-            $height = $this->input->post('height');
+        else {            
+            $doctor = $this->input->post('doctor');
+            $patient = $this->input->post('patient');                      
+            $this->RecordMedic_model->update($doctor, $patient, $id);
 
-            $user = $this->Patient_model->check_user_record($record);
-
-            if($user) {
-                $this->session->set_flashdata('errors', "Rekam medis sudah pernah terdaftar");
-                redirect('patient/edit'); 
-            }     
-                        
-            $this->Patient_model->update_user($id, $record, $name, $birth, $nik, $phone, $address, $bloodtype, $weight, $height);
-
-            redirect('patient');
-        }        
+            $this->session->set_flashdata('success', "Data pendaftaran telah diupdate");
+            redirect('record');
+        }       
     }
 
     public function delete() {       
         $this->form_validation->set_rules('id', 'ID', 'required');
-
         $id = $this->input->get('id');
-        $user = $this->Patient_model->delete_user($id);
+        $data = $this->RecordMedic_model->get_record_id($id);
+
+        if($data->isDone) {
+            $this->session->set_flashdata('errors', "Data pendaftaran tidak dapat dihapus");
+            redirect('record');     
+        }
+
+        $user = $this->RecordMedic_model->delete($id);
         
-        redirect('patient'); 
+        $this->session->set_flashdata('success', "Data pendaftaran telah dihapus");
+        redirect('record'); 
     }
 }

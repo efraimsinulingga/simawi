@@ -57,6 +57,7 @@ $route['icd'] = 'welcome/icd';
 
 $route['auth/login'] = 'auth/login';
 $route['auth/do_login'] = 'auth/do_login';
+$route['auth/logout'] = 'auth/logout';
 $route['user'] = 'user/list';
 $route['user/create'] = 'user/create';
 $route['user/create-post'] = 'user/create_post';
