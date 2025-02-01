@@ -15,7 +15,7 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Data Pasien</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo site_url('/'); ?>">Dashboard</a></li>
                             <li class="breadcrumb-item active">Pasien</li>
                         </ol>                                           
 						<!--Content Here-->
@@ -29,7 +29,7 @@
                                         Data Pasien
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <a href="<?php echo base_url('/patient/create'); ?>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Pasien</a>
+                                        <a href="<?php echo site_url('/patient/create'); ?>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Pasien</a>
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                             <td><?php echo $item['Phone']; ?></td>
                                             <td><?php echo date('d M Y', strtotime($item['CreatedAt'])); ?></td>
                                             <td>
-                                                <a href="<?php echo base_url('patient/edit?id='); ?><?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
+                                                <a href="<?php echo site_url('patient/edit?id='); ?><?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
                                                 <button type="button" onClick="deleteConfirm(<?php echo $item['ID']; ?>)" class="btn btn-sm btn-danger ms-2"><i class="fas fa-fw fa-trash"></i>Delete</button>
                                             </td>
                                         </tr>
@@ -112,7 +112,7 @@
                     confirmButtonText: "Ya, Hapus!"
                     }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "<?php echo base_url('patient/delete?id='); ?>"+id
+                        window.location.href = "<?php echo site_url('patient/delete?id='); ?>"+id
                     }
                 });
             }

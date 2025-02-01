@@ -15,7 +15,7 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Data Riwayat Pasien</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo site_url('/'); ?>">Dashboard</a></li>
                             <li class="breadcrumb-item active">Riwayat Pasien</li>
                         </ol>                                           
 						<!--Content Here-->
@@ -40,7 +40,7 @@
                                         </form>  
                                     
                                     <div class="col-md-2 text-end">
-                                        <a href="<?php echo base_url('/record/create'); ?>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Daftar</a>
+                                        <a href="<?php echo site_url('/record/create'); ?>" class="btn btn-success btn-sm"><i class="fas fa-fw fa-add"></i>Daftar</a>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                             </td>
                                             <td>
                                                 <?php if ($item['isDone'] == 0): ?>
-                                                    <a href="<?php echo base_url('/record/edit?id='); ?><?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
+                                                    <a href="<?php echo site_url('/record/edit?id='); ?><?php echo $item['ID']; ?>" class="btn btn-sm btn-light"><i class="fas fa-fw fa-pencil"></i>Edit</a>
                                                     <button type="button" onClick="deleteConfirm(<?php echo $item['ID']; ?>)" class="btn btn-sm btn-danger"><i class="fas fa-fw fa-trash"></i>Delete</button>
                                                 <?php endif; ?>
                                             </td>
@@ -139,7 +139,7 @@
                     confirmButtonText: "Ya, Hapus!"
                     }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = "<?php echo base_url('/record/delete?id='); ?>"+id
+                        window.location.href = "<?php echo site_url('/record/delete?id='); ?>"+id
                     }
                 });
             }

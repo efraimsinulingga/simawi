@@ -63,7 +63,7 @@
                     if (isValid) {
                         setLoader((prev) => !prev)
                         try {    
-                            const res = await fetch(`http://localhost:8080/auth/do_login`, {
+                            const res = await fetch(`<?php echo site_url('auth/do_login');?>`, {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",

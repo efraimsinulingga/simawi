@@ -15,8 +15,8 @@
                     <div class="container-fluid px-4">
                         <h4 class="mt-4 head-font">Edit Pasien</h4>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item"><a href="<?php echo base_url('/'); ?>">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="<?php echo base_url('/patient'); ?>">Pasien</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo site_url('/'); ?>">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo site_url('/patient'); ?>">Pasien</a></li>
                             <li class="breadcrumb-item active">Edit Pasien</li>
                         </ol>                                           
 						<!--Content Here-->

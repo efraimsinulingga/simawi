@@ -86,6 +86,6 @@ $route['record/delete'] = 'record/delete';
 $route['record/edit'] = 'record/edit';
 $route['record/edit-post'] = 'record/edit_post';
 
-$route['medical-record'] = 'medicalrecord/list';
-$route['medical-record/diagnose'] = 'medicalrecord/diagnose';
-$route['medical-record/diagnose-post'] = 'medicalrecord/diagnose_post';
+$route['medical-record'] = 'MedicalRecord/list';
+$route['medical-record/diagnose'] = 'MedicalRecord/diagnose';
+$route['medical-record/diagnose-post'] = 'MedicalRecord/diagnose_post';
